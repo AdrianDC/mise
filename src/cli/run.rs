@@ -207,6 +207,23 @@ pub(crate) struct Run {
     #[usage(long, conflicts = ["task", "affected"])]
     pub all: bool,
 
+    /// Pick several tasks to run from a menu grouped by folder
+    ///
+    /// Task names, aliases, and folders given in place of a task start checked.
+    /// Checking a folder's line runs every task in it. The picked tasks run as if
+    /// they were named with `:::`; add `-j 1` to run them one at a time.
+    #[usage(long, conflicts = ["affected", "at", "tag"])]
+    pub select: bool,
+
+    /// Show task aliases in the `--select` menu
+    #[usage(long)]
+    pub alias: bool,
+
+    /// Run the `--select` presets without the menu.
+    /// Set internally by `mise select --run`; not a user-facing flag.
+    #[usage(skip)]
+    pub select_run: bool,
+
     /// Continue running tasks even if one fails
     #[usage(long, short = 'c')]
     pub continue_on_error: bool,
@@ -1068,7 +1085,22 @@ impl Run {
             once(task).chain(self.args.clone()).collect_vec()
         };
 
-        let mut task_list = if self.affected {
+        let mut task_list = if self.select {
+            let presets = self.task.iter().chain(&self.args).cloned().collect_vec();
+            let tasks = crate::task::task_select::select_tasks(
+                &config,
+                &presets,
+                self.all,
+                self.skip_deps,
+                self.select_run,
+                self.alias,
+            )
+            .await?;
+            if tasks.is_empty() {
+                return Ok(());
+            }
+            tasks
+        } else if self.affected {
             get_affected_task_list(
                 &config,
                 &args,

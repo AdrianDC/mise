@@ -824,6 +824,9 @@ Search for available tools
 \fIAliases: \fRlist
 .RE
 .TP
+\fBselect\fR
+Pick several tasks to run from a menu
+.TP
 \fBself\-update\fR
 Update mise itself
 .TP
@@ -8865,6 +8868,14 @@ It runs in the worktree's copy of the directory mise was started from (not a tas
 \fB\-\-all\fR
 Open the task picker with tasks from every project in the monorepo
 .TP
+\fB\-\-select\fR
+Pick several tasks to run from a menu grouped by folder
+
+Task names, aliases, and folders given in place of a task start checked. Checking a folder's line runs every task in it. The picked tasks run as if they were named with `:::`; add `\-j 1` to run them one at a time.
+.TP
+\fB\-\-alias\fR
+Show task aliases in the `\-\-select` menu
+.TP
 \fB\-c, \-\-continue\-on\-error\fR
 Continue running tasks even if one fails
 .TP
@@ -9247,6 +9258,58 @@ AWS_ACCESS_KEY_ID  \-      no    run, exec          (lease aws)
 DATABASE_URL       true   no    run, exec  deploy  app database
 GCP_SA_JSON        exec   yes   run                service account
 SIGNING_KEY        false  no    \-                  release signing key
+.RE
+.SH "MISE SELECT"
+Pick several tasks to run from a menu
+
+Opens a menu of tasks grouped by folder, the part of a task's name before its last `:`. Press space to check a task, `a` to check or uncheck all, and `/` to filter; checking a folder's line runs every task in it. Enter runs the checked tasks as if they were named with `:::`, and Esc cancels.
+
+`\-\-run` runs the presets without opening the menu.
+
+The same as `mise run \-\-select`, which also takes `mise run` flags. Global flags go before `select`, such as `mise \-j 1 select` to run the tasks one at a time.
+.PP
+\fBUsage:\fR mise select [OPTIONS] [<PRESETS>] ...
+.PP
+\fBOptions:\fR
+.PP
+.TP
+\fB\-\-alias\fR
+Show task aliases in the menu
+.TP
+\fB\-\-run\fR
+Run the presets without opening the menu
+.TP
+\fB\-h, \-\-help\fR
+Print help
+\fBArguments:\fR
+.PP
+.TP
+\fB<PRESETS>\fR
+Task names, aliases, or folders to check when the menu opens
+\fBExamples:\fR
+.PP
+Pick tasks to run
+.PP
+.RS 4
+mise select
+.RE
+.PP
+Pick tasks, with "lint" and every task in the "test" folder checked
+.PP
+.RS 4
+mise select lint test
+.RE
+.PP
+Run every task in the "build" folder, without the menu
+.PP
+.RS 4
+mise select \-\-run build
+.RE
+.PP
+Pick tasks and run them one at a time
+.PP
+.RS 4
+mise \-j 1 select
 .RE
 .SH "MISE SELF-UPDATE"
 Update mise itself

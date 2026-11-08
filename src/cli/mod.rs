@@ -96,6 +96,7 @@ pub(crate) mod run;
 mod run_at;
 mod search;
 mod secrets;
+mod select;
 #[cfg_attr(not(feature = "self_update"), path = "self_update_stub.rs")]
 pub(crate) mod self_update;
 mod set;
@@ -382,6 +383,7 @@ pub(crate) enum Commands {
     Run(Box<run::Run>),
     Search(search::Search),
     Secrets(secrets::Secrets),
+    Select(select::Select),
     SelfUpdate(self_update::SelfUpdate),
     Set(set::Set),
     Settings(settings::Settings),
@@ -570,6 +572,7 @@ impl Commands {
             Self::Run(cmd) => Box::pin((*cmd).run()),
             Self::Search(cmd) => Box::pin(cmd.run()),
             Self::Secrets(cmd) => Box::pin(cmd.run()),
+            Self::Select(cmd) => Box::pin(cmd.run()),
             Self::SelfUpdate(cmd) => Box::pin(cmd.run()),
             Self::Set(cmd) => Box::pin(cmd.run()),
             Self::Settings(cmd) => Box::pin(cmd.run()),
@@ -1384,6 +1387,9 @@ impl Cli {
                         args: self.task_args.unwrap_or_default(),
                         args_last: self.task_args_last,
                         all: false,
+                        select: false,
+                        alias: false,
+                        select_run: false,
                         at: None,
                         at_setup: None,
                         affected: false,
@@ -1491,7 +1497,7 @@ fn invoked_page(
     usage_rs::help::page(Cli::spec(), Cli::command(), argv, cmd, page, style)
 }
 
-fn usage_error(argv: &[&std::ffi::OsStr], err: usage_rs::Error<'_, '_>) -> Report {
+pub(crate) fn usage_error(argv: &[&std::ffi::OsStr], err: usage_rs::Error<'_, '_>) -> Report {
     use usage_rs::help::Page;
     let spec = Cli::spec();
     match err {

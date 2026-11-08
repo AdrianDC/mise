@@ -52,6 +52,23 @@ mise run build arg1 arg2 ::: test arg3 arg4
 
 The tasks run in parallel unless one depends on another.
 
+### Pick tasks from a menu
+
+`mise select`, or `mise run --select`, opens a menu of tasks grouped by
+folder (the part of a task's name before its last `:`). Space checks a task,
+`a` checks or unchecks all, `/` filters, and Enter runs the checked tasks as if
+they were named with `:::`. Checking a folder's line runs every task in it.
+
+Task names, aliases, and folders given on the command line start checked:
+
+```sh
+mise select lint test    # "lint" and every task in the "test" folder start checked
+mise select --run build  # run every task in the "build" folder, without the menu
+mise select '^test:u'    # check the tasks whose name starts with "test:u"
+mise select --alias      # show task aliases in the menu
+mise -j 1 select         # run the picked tasks one at a time
+```
+
 ## Select tasks by name
 
 Name related tasks with `:`-separated groups, such as `test:unit` and

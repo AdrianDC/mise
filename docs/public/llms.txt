@@ -411,6 +411,7 @@
 - [mise search](https://mise.jdx.dev/cli/search.html): Search for available tools
 - [mise secrets](https://mise.jdx.dev/cli/secrets.html): [experimental] Inspect the project's secrets source
 - [mise secrets ls](https://mise.jdx.dev/cli/secrets/ls.html): [experimental] List secret names from the project's secrets source
+- [mise select](https://mise.jdx.dev/cli/select.html): Pick several tasks to run from a menu
 - [mise self-update](https://mise.jdx.dev/cli/self-update.html): Update mise itself
 - [mise set](https://mise.jdx.dev/cli/set.html): Set, show, or list environment variables in mise.toml
 - [mise settings](https://mise.jdx.dev/cli/settings.html): Manage settings

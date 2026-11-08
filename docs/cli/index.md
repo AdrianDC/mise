@@ -113,6 +113,7 @@ Choose a command family below. Its page lists the available subcommands.
 ### Tasks and project automation
 
 - [`mise run`](/cli/run.html) — Run tasks and their dependencies
+- [`mise select`](/cli/select.html) — Pick several tasks to run from a menu
 - [`mise tasks`](/cli/tasks.html) — Manage tasks
 - [`mise watch`](/cli/watch.html) — Run tasks and rerun them when files change
 - [`mise deps`](/cli/deps.html) — [experimental] Manage project dependencies

@@ -833,6 +833,9 @@ export const commands: { [key: string]: Command } = {
       },
     },
   },
+  select: {
+    hide: false,
+  },
   "self-update": {
     hide: false,
   },

@@ -160,6 +160,10 @@ const guides: Record<string, [string, string]> = {
   reshim: ["Shims", "/dev-tools/shims.html"],
   run: ["Running tasks", "/tasks/running-tasks.html"],
   search: ["Registry and explicit backends", "/registry.html"],
+  select: [
+    "Picking tasks from a menu",
+    "/tasks/running-tasks.html#pick-tasks-from-a-menu",
+  ],
   "self-update": ["Updating mise", "/installing-mise.html#updating"],
   skills: [
     "Skills and other Packslip resources",
@@ -215,7 +219,10 @@ const categories = [
     "Shell and environment",
     "activate deactivate completion en env exec shell set unset vars shell-alias tool-alias secrets token ssh",
   ],
-  ["Tasks and project automation", "run tasks watch deps daemons generate"],
+  [
+    "Tasks and project automation",
+    "run select tasks watch deps daemons generate",
+  ],
   ["Machine setup and images", "bootstrap dotfiles oci"],
   [
     "Configuration and diagnostics",

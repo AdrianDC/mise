@@ -5970,6 +5970,15 @@ It runs in the worktree's copy of the directory mise was started from (not a tas
         arg <CMD>
     }
     flag --all help="Open the task picker with tasks from every project in the monorepo" conflicts=--affected
+    flag --select help="Pick several tasks to run from a menu grouped by folder" {
+        long_help #"""
+Pick several tasks to run from a menu grouped by folder
+
+Task names, aliases, and folders given in place of a task start checked. Checking a folder's line runs every task in it. The picked tasks run as if they were named with `:::`; add `-j 1` to run them one at a time.
+"""#
+        conflicts "--affected" "--at" "--tag"
+    }
+    flag --alias help="Show task aliases in the `--select` menu"
     flag "-c --continue-on-error" help="Continue running tasks even if one fails"
     flag "-C --cd" help="Change to this directory before running the tasks" {
         arg <DIR>
@@ -6254,6 +6263,25 @@ GCP_SA_JSON        exec   yes   run                service account
 SIGNING_KEY        false  no    -                  release signing key
 """# help="List the secret names and how each can be granted"
     }
+}
+cmd select help="Pick several tasks to run from a menu" {
+    long_help #"""
+Pick several tasks to run from a menu
+
+Opens a menu of tasks grouped by folder, the part of a task's name before its last `:`. Press space to check a task, `a` to check or uncheck all, and `/` to filter; checking a folder's line runs every task in it. Enter runs the checked tasks as if they were named with `:::`, and Esc cancels.
+
+`--run` runs the presets without opening the menu.
+
+The same as `mise run --select`, which also takes `mise run` flags. Global flags go before `select`, such as `mise -j 1 select` to run the tasks one at a time.
+"""#
+    flag --alias help="Show task aliases in the menu"
+    flag --run help="Run the presets without opening the menu"
+    flag "-h --help" help="Print help" action=help builtin=#true
+    arg "[PRESETS]…" help="Task names, aliases, or folders to check when the menu opens" required=#false var=#true
+    example "mise select" help="Pick tasks to run"
+    example "mise select lint test" help="Pick tasks, with \"lint\" and every task in the \"test\" folder checked"
+    example "mise select --run build" help="Run every task in the \"build\" folder, without the menu"
+    example "mise -j 1 select" help="Pick tasks and run them one at a time"
 }
 cmd self-update help="Update mise itself" effect=write {
     long_help #"""
@@ -7245,6 +7273,15 @@ It runs in the worktree's copy of the directory mise was started from (not a tas
             arg <CMD>
         }
         flag --all help="Open the task picker with tasks from every project in the monorepo" conflicts=--affected
+        flag --select help="Pick several tasks to run from a menu grouped by folder" {
+            long_help #"""
+Pick several tasks to run from a menu grouped by folder
+
+Task names, aliases, and folders given in place of a task start checked. Checking a folder's line runs every task in it. The picked tasks run as if they were named with `:::`; add `-j 1` to run them one at a time.
+"""#
+            conflicts "--affected" "--at" "--tag"
+        }
+        flag --alias help="Show task aliases in the `--select` menu"
         flag "-c --continue-on-error" help="Continue running tasks even if one fails"
         flag "-C --cd" help="Change to this directory before running the tasks" {
             arg <DIR>

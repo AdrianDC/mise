@@ -56,6 +56,10 @@ To create a script task, run `mise tasks add --file hello -- echo hello`, then `
 
   It runs in the worktree's copy of the directory mise was started from (not a task's `dir`), outside mise's environment, with `MISE_RUN_AT_SOURCE` set to the repository the worktree came from. `--timeout` does not limit it, only the tasks after it.
 - **`--all`** — Open the task picker with tasks from every project in the monorepo
+- **`--select`** — Pick several tasks to run from a menu grouped by folder
+
+  Task names, aliases, and folders given in place of a task start checked. Checking a folder's line runs every task in it. The picked tasks run as if they were named with `:::`; add `-j 1` to run them one at a time.
+- **`--alias`** — Show task aliases in the `--select` menu
 - **`-c --continue-on-error`** — Continue running tasks even if one fails
 - **`-C --cd <DIR>`** — Change to this directory before running the tasks
 - **`-f --force`** — Run the tasks even if their outputs are up to date
