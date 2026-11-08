@@ -84,6 +84,7 @@ pub fn nbright<D>(val: D) -> StyledObject<D> {
     nstyle(val).bright()
 }
 
+/// Task prefix style, picked from the name, without dim or bright colors.
 fn prefix_style(hash_key: impl AsRef<str>, stderr: bool) -> Style {
     static COLORS: LazyLock<Vec<Color>> =
         LazyLock::new(|| vec![Color::Blue, Color::Magenta, Color::Cyan, Color::Green]);
@@ -95,13 +96,9 @@ fn prefix_style(hash_key: impl AsRef<str>, stderr: bool) -> Style {
     } else {
         styled.for_stdout()
     };
-    match (hash / COLORS.len()) % 4 {
-        1 => styled = styled.bold(),
-        2 => styled = styled.dim(),
-        3 => styled = styled.bright(),
-        _ => {}
+    if (hash / COLORS.len()) % 2 == 1 {
+        styled = styled.bold();
     }
-
     styled
 }
 
@@ -150,7 +147,18 @@ mod tests {
         assert_eq!(prefix_ansi("b"), "\x1b[36m");
         assert_eq!(prefix_ansi("c"), "\x1b[32m");
         assert_eq!(prefix_ansi("alpha"), "\x1b[36m\x1b[1m");
-        assert_eq!(prefix_ansi("bravo"), "\x1b[36m\x1b[2m");
-        assert_eq!(prefix_ansi("echo"), "\x1b[38;5;10m");
+        assert_eq!(prefix_ansi("bravo"), "\x1b[36m");
+        assert_eq!(prefix_ansi("echo"), "\x1b[32m\x1b[1m");
+    }
+
+    #[test]
+    fn prefixes_stay_readable_on_light_backgrounds() {
+        // No dim (2) or bright (9x, 38;5;n) colors.
+        for name in (0..64u8).map(|n| char::from(b'0' + n).to_string()) {
+            let ansi = prefix_ansi(&name);
+            assert!(!ansi.contains("\x1b[2m"), "{name}: {ansi:?}");
+            assert!(!ansi.contains("\x1b[9"), "{name}: {ansi:?}");
+            assert!(!ansi.contains("38;5;"), "{name}: {ansi:?}");
+        }
     }
 }
