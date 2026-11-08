@@ -36,11 +36,11 @@ fn select_theme(colors_enabled: bool, color_theme: &str, light_background: bool)
         return Theme::new();
     }
     let auto = || {
-        if light_background {
+        readable_on_any_background(if light_background {
             Theme::base16()
         } else {
             Theme::charm()
-        }
+        })
     };
     match color_theme.to_lowercase().as_str() {
         "auto" | "default" | "" => auto(),
@@ -53,6 +53,14 @@ fn select_theme(colors_enabled: bool, color_theme: &str, light_background: bool)
             auto()
         }
     }
+}
+
+/// Draw unselected options in the terminal's text color, readable on any background.
+fn readable_on_any_background(mut theme: Theme) -> Theme {
+    let plain = Theme::new();
+    theme.unselected_option = plain.unselected_option;
+    theme.unselected_prefix_fg = plain.unselected_prefix_fg;
+    theme
 }
 
 /// Best-effort detection of a light terminal background via the `COLORFGBG`
@@ -137,6 +145,28 @@ mod tests {
             let dark = select_theme(true, theme, false);
             assert_eq!(dark.title.fg(), Theme::charm().title.fg(), "theme={theme}");
         }
+    }
+
+    #[test]
+    fn auto_draws_unselected_options_in_the_terminal_foreground() {
+        // The background is often undetected: no fixed light text.
+        for light_background in [true, false] {
+            let auto = select_theme(true, "auto", light_background);
+            assert_eq!(auto.unselected_option.fg(), None);
+            assert_eq!(auto.unselected_prefix_fg.fg(), None);
+        }
+    }
+
+    #[test]
+    fn explicit_themes_keep_their_own_option_colors() {
+        assert_eq!(
+            select_theme(true, "charm", false).unselected_option.fg(),
+            Theme::charm().unselected_option.fg()
+        );
+        assert_eq!(
+            select_theme(true, "base16", true).unselected_option.fg(),
+            Theme::base16().unselected_option.fg()
+        );
     }
 
     #[test]
